@@ -6,24 +6,26 @@
     <h2>Nadchodzące wydarzenia</h2>
     <p>Przeglądaj najnowsze konferencje, warsztaty i spotkania branżowe:</p>
 
+    <form method="get" action="{% url 'events:event-list' %}" class="search-form">
+        <input type="text" name="q" placeholder="Szukaj po tytule..." value="{{ q }}">
+        <button type="submit">Szukaj</button>
+    </form>
+
+    <div class="category-menu">
+        <a href="{% url 'events:event-list' %}" class="category-link {% if not current_category %}active{% endif %}">
+            Wszystkie
+        </a>
+        {% for category in categories %}
+            <a href="{% url 'events:events-by-category' category.slug %}" class="category-link {% if current_category == category %}active{% endif %}">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+
     {% if events %}
         <div class="event-grid">
             {% for event in events %}
-                <div class="card">
-                    <div>
-                        <span class="badge">{{ event.category.name }}</span>
-                        <h2>{{ event.title }}</h2>
-                        <p class="meta">
-                            📅 {{ event.date|date:"d M Y, H:i" }}<br>
-                            📍 {{ event.location }}<br>
-                            💰 {% if event.price == 0 %}<strong>Bezpłatne</strong>{% else %}{{ event.price }} PLN{% endif %}
-                        </p>
-                        <p>{{ event.description|truncatewords:20 }}</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <a href="{% url 'events:event-detail' event.slug %}" class="btn">Zobacz szczegóły</a>
-                    </div>
-                </div>
+                {% include 'events/includes/event_card.html' %}
             {% endfor %}
         </div>
     {% else %}
