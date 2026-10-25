@@ -1,0 +1,32 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Aktualne Wydarzenia – EventHub{% endblock %}
+
+{% block content %}
+    <h2>Nadchodzące wydarzenia</h2>
+    <p>Przeglądaj najnowsze konferencje, warsztaty i spotkania branżowe:</p>
+
+    {% if events %}
+        <div class="event-grid">
+            {% for event in events %}
+                <div class="card">
+                    <div>
+                        <span class="badge">{{ event.category.name }}</span>
+                        <h2>{{ event.title }}</h2>
+                        <p class="meta">
+                            📅 {{ event.date|date:"d M Y, H:i" }}<br>
+                            📍 {{ event.location }}<br>
+                            💰 {% if event.price == 0 %}<strong>Bezpłatne</strong>{% else %}{{ event.price }} PLN{% endif %}
+                        </p>
+                        <p>{{ event.description|truncatewords:20 }}</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <a href="{% url 'events:event-detail' event.slug %}" class="btn">Zobacz szczegóły</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="margin-top: 20px;">Brak opublikowanych wydarzeń w tej chwili.</p>
+    {% endif %}
+{% endblock %}
